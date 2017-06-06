@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div id="container">
+    <div id="myClock">Clock</div>
+
+    <div id="Alarm">
+        Hour: <input id="aHour" type="number" min="0" max="23" onChange="numCap(this);"/>
+        &nbsp;&nbsp;
+        Minute: <input id="aMinute" type="number" min="00" max="59" onChange="numCap(this)" />
+        &nbsp;&nbsp;
+        Second: <input id="aSecond" type="number" min="00" max="59" onChange="numCap(this)" />
+        &nbsp;&nbsp;
+        &nbsp;&nbsp;
+        <input id="aSwitch" type="button" value="OFF" onclick="alarmSwitch()"/>
+        <input id="turnOff" type="button" value="SHUT OFF" onclick="disableAlarm();"/>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+function digClock() {
+    var sound = new Audio("http://www.freespecialeffects.co.uk/soundfx/sirens/alarm_01.wav");
+    sound.loop = true;
+    var currentTime = new Date();//creates a variable cuurentTime that pulls the time
+    var hours = currentTime.getHours(); // assigning the value to variable hours
+    var minutes = currentTime.getMinutes(); // assigning the value to variable minutes
+    var seconds = currentTime.getSeconds(); // assigning the value to variable seconds
+    var amPm = "AM"; // assigning the value to variable amPM
+    getID = function(value){ return document.getElementById( value ); }; 
+    var aHour = getID("aHour");
+    var aMinute = getID("aMinute");
+    var aSecond = getID("aSecond");
+    var aSwitch = getID("aSwitch");
+    var aOff = getID("turnOff");
+    var refreshTime = 500;
+    var alarmTimer = null;
+    aSwitch.On = false;
+    aSwitch.value = "OFF";
+
+    function alarmSwitch(){
+        switch( aSwitch.On )
+    {
+        case false:
+            aSwitch.On = true;
+            aSwitch.value = "ON";
+        
+        alarmSet();
+        break;
+        case true:
+            aSwitch.On = false;
+            aSwitch.value = "OFF";
+        
+        // CLEARS THE BEEPER 
+        clearTimeout( alarmTimer );
+        break;
+    }
+}
+    function disableAlarm(){
+        sound.pause();
+        aOff.style.display = "none";
+    }
+    function alarmFire(){
+        if( aSwitch.On ){
+            aOff.style.display = "block";
+            sound.play();
+        }
+        else
+            alert("You broke my watch..");
+    }
+    // function alarmSet(){
+    //     clearTimeout( alarmTimer );
+
+    //     var tomo = false;
+    //     if(aHour.value < hours.value){
+    //         tomo = true;
+    //     }
+    //     else if(aHour.value == hours.value && aMinute.value < minutes.value){
+    //         tomo = true;
+    //     }
+    //     else if(aHour.value == hours.value && aMinute.value == minutes.value && aSecond.value < seconds.value){
+    //         tomo = true;
+    //     }
+    //     // time = new Date( year, month, day, aHour.value, aMinute.value, aSecond.value, date.getMilliseconds() );
+    //     // time = ( time - (new Date()) );
+
+    //     if( aSwitch.On == false)
+    //             alarmSwitch();
+    //     alarmTimer = setTimeout( function(){alarmFire();} ,parseInt(time) );
+    //     }
+        
+    //     // alarmSet();// Starts up the alarm automatically when a value is changed.
+
+    // };
+        // numCap = function( obj, min, max){
+        // obj.value = Math.max(obj.min, Math.min(obj.max, obj.value) );
+    
+
+    // Please note that the new Date() funcion will return in military times
+    // Conditions are being set to display the military times in AM/PM 
+    if(hours >= 12){ // changes the  AM to PM if hours are greater than and equal to 12
+        amPm = "PM"
+    }
+    if(hours == 0) { //if clock returns 0 in hours then change the return value to 12
+        hours = 12;
+    } else if(hours > 12) { //if the clock returns a value bigger than 12 then return = (value - 12)
+        hours = hours - 12;
+    } 
+    if(hours < 10){ //if the clock returns a value smaller than 10 then add  a string "0" to 
+        hours = "0" + hours; // the value
+    }
+
+    if(minutes < 10){ //if the clock returns a value smaller than 10 then add  a string "0" to 
+        minutes = "0" + minutes; // the value
+    }
+    if(seconds < 10){ //if the clock returns a value smaller than 10 then add  a string "0" to 
+        seconds = "0" + seconds; // the value
+    }
+    var displayclock = document.getElementById('myClock'); //declaring and assigning a variable to the id of element where clock will appear
+    displayclock.innerHTML = hours + ":" + minutes + ":" + seconds + " " + amPm; //formatting of layout of clock and setting it to display
+    setTimeout('digClock()', 1000); //
+
+}
+digClock();
+    
+</script>
+</html>
