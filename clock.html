@@ -1,103 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Alarm Clock</title>
 </head>
+<style>
+    body{
+        background-image: url('coffee.jpg');
+        background-repeat: no-repeat;
+        height: 100%vh;
+        width: 100%vh;
+        background-size: cover;
+    }
+    #myClock{
+        position: relative;
+        padding:2%;
+        background: rgba(0,0,0,0.4);
+        width: 30%;
+        margin: 0 auto;
+        font-size: 35pt;
+        color: white;
+        text-align: center;
+        border-radius:10pt;
+        box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.7);  
+    }
+    #Alarm{
+        width:40%;
+        font-size:25pt;
+        color: white;
+        margin-left: 750px;
+        margin-top: 80px;
+        position: relative;
+        border-radius:10pt;
+        box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.7);
+        background: rgba(0,0,0,0.4);
+        padding:1%;
+    }
+    #aHour{
+        padding:1%;
+        font-size:25pt;
+        border-radius:10pt;
+    }
+     #aMinute{
+        padding:1%;
+        font-size:25pt;
+        border-radius:10pt;
+    }
+    #turnOff{
+        padding:1%;
+        font-size:15pt;
+        border-radius:10pt;
+        color: white;
+        margin-left:15px;
+        border: 2px solid black;
+        opacity:0.5;
+        
+    }
+    #turnOff:hover{
+        color:dimgrey;
+        margin-left:17px;
+        margin-top:2px;
+        transition: linear .1s;
+        opacity:1;
+    }
+</style>
 <body>
 <div id="container">
     <div id="myClock">Clock</div>
 
     <div id="Alarm">
-        Hour: <input id="aHour" type="number" min="0" max="23" onChange="numCap(this);"/>
-        &nbsp;&nbsp;
-        Minute: <input id="aMinute" type="number" min="00" max="59" onChange="numCap(this)" />
-        &nbsp;&nbsp;
-        Second: <input id="aSecond" type="number" min="00" max="59" onChange="numCap(this)" />
-        &nbsp;&nbsp;
-        &nbsp;&nbsp;
-        <input id="aSwitch" type="button" value="OFF" onclick="alarmSwitch()"/>
+        Hour: <input id="aHour" type="number" min="00" max="12" onchange="alarmTime(this.value)" />
+        Minute: <input id="aMinute" type="number" min="00" max="59" onChange="alarmTime(this.value)" />
         <input id="turnOff" type="button" value="SHUT OFF" onclick="disableAlarm();"/>
+        <p id="myAlarm"></p>
     </div>
 </div>
 </body>
 <script type="text/javascript">
-function digClock() {
-    var sound = new Audio("http://www.freespecialeffects.co.uk/soundfx/sirens/alarm_01.wav");
-    sound.loop = true;
-    var currentTime = new Date();//creates a variable cuurentTime that pulls the time
-    var hours = currentTime.getHours(); // assigning the value to variable hours
-    var minutes = currentTime.getMinutes(); // assigning the value to variable minutes
-    var seconds = currentTime.getSeconds(); // assigning the value to variable seconds
-    var amPm = "AM"; // assigning the value to variable amPM
-    getID = function(value){ return document.getElementById( value ); }; 
-    var aHour = getID("aHour");
-    var aMinute = getID("aMinute");
-    var aSecond = getID("aSecond");
-    var aSwitch = getID("aSwitch");
-    var aOff = getID("turnOff");
-    var refreshTime = 500;
-    var alarmTimer = null;
-    aSwitch.On = false;
-    aSwitch.value = "OFF";
+var currentTime;
+var hours; 
+var minutes;
+var seconds;
+var amPm, aH, aM;
+var shutAlarm = false;
+var sound = new Audio("http://www.freespecialeffects.co.uk/soundfx/sirens/alarm_01.wav");
+sound.loop = true;
 
-    function alarmSwitch(){
-        switch( aSwitch.On )
-    {
-        case false:
-            aSwitch.On = true;
-            aSwitch.value = "ON";
-        
-        alarmSet();
-        break;
-        case true:
-            aSwitch.On = false;
-            aSwitch.value = "OFF";
-        
-        // CLEARS THE BEEPER 
-        clearTimeout( alarmTimer );
-        break;
-    }
-}
-    function disableAlarm(){
-        sound.pause();
-        aOff.style.display = "none";
-    }
-    function alarmFire(){
-        if( aSwitch.On ){
-            aOff.style.display = "block";
-            sound.play();
-        }
-        else
-            alert("You broke my watch..");
-    }
-    // function alarmSet(){
-    //     clearTimeout( alarmTimer );
-
-    //     var tomo = false;
-    //     if(aHour.value < hours.value){
-    //         tomo = true;
-    //     }
-    //     else if(aHour.value == hours.value && aMinute.value < minutes.value){
-    //         tomo = true;
-    //     }
-    //     else if(aHour.value == hours.value && aMinute.value == minutes.value && aSecond.value < seconds.value){
-    //         tomo = true;
-    //     }
-    //     // time = new Date( year, month, day, aHour.value, aMinute.value, aSecond.value, date.getMilliseconds() );
-    //     // time = ( time - (new Date()) );
-
-    //     if( aSwitch.On == false)
-    //             alarmSwitch();
-    //     alarmTimer = setTimeout( function(){alarmFire();} ,parseInt(time) );
-    //     }
-        
-    //     // alarmSet();// Starts up the alarm automatically when a value is changed.
-
-    // };
-        // numCap = function( obj, min, max){
-        // obj.value = Math.max(obj.min, Math.min(obj.max, obj.value) );
+function alarmTime(a){
+        aH =document.getElementById('aHour').value;
+        aM =document.getElementById('aMinute').value;
+        document.getElementById("myAlarm").innerHTML = ("Alarm is set for" + " ~ " + aH + " :" + aM);
+    }  
+function disableAlarm(){
+    sound.pause();
+    shutAlarm = true;
     
+};
 
+
+function digClock() {
+   
+    currentTime = new Date();//creates a variable cuurentTime that pulls the time
+    hours = currentTime.getHours(); // assigning the value to variable hours
+    minutes = currentTime.getMinutes(); // assigning the value to variable minutes
+    seconds = currentTime.getSeconds(); // assigning the value to variable seconds
+    amPm = "AM"; // assigning the value to variable amPM
+  
+    if(aH == hours && aM == minutes && shutAlarm == false){
+        sound.play();
+    } else{
+        sound.pause();
+    };
+
+    /*start of clock without the alarm function*/
     // Please note that the new Date() funcion will return in military times
     // Conditions are being set to display the military times in AM/PM 
     if(hours >= 12){ // changes the  AM to PM if hours are greater than and equal to 12
