@@ -24,10 +24,10 @@
         box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.7);  
     }
     #Alarm{
-        width:40%;
+        width:45%;
         font-size:25pt;
         color: white;
-        margin-left: 750px;
+        margin-left: 650px;
         margin-top: 80px;
         position: relative;
         border-radius:10pt;
@@ -59,8 +59,14 @@
         color:dimgrey;
         margin-left:17px;
         margin-top:2px;
-        transition: linear .1s;
+        transition: linear .3s;
         opacity:1;
+    }
+    #amp {
+        padding:45%;
+        background: silver;
+        font-size: 20pt;
+        color: white;
     }
 </style>
 <body>
@@ -70,6 +76,10 @@
     <div id="Alarm">
         Hour: <input id="aHour" type="number" min="00" max="12" onchange="alarmTime(this.value)" />
         Minute: <input id="aMinute" type="number" min="00" max="59" onChange="alarmTime(this.value)" />
+        <select id="amp" onchange="alarmTime(this.value)">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+        </select>
         <input id="turnOff" type="button" value="SHUT OFF" onclick="disableAlarm();"/>
         <p id="myAlarm"></p>
     </div>
@@ -84,19 +94,17 @@ var amPm, aH, aM;
 var shutAlarm = false;
 var sound = new Audio("http://www.freespecialeffects.co.uk/soundfx/sirens/alarm_01.wav");
 sound.loop = true;
-
 function alarmTime(a){
         aH =document.getElementById('aHour').value;
         aM =document.getElementById('aMinute').value;
-        document.getElementById("myAlarm").innerHTML = ("Alarm is set for" + " ~ " + aH + " :" + aM);
+        aMpM = document.getElementById('amp').value;
+        document.getElementById("myAlarm").innerHTML = ("Alarm is set for" + " ~ " + aH + " : " + aM + " " + aMpM);
     }  
 function disableAlarm(){
     sound.pause();
     shutAlarm = true;
     
 };
-
-
 function digClock() {
    
     currentTime = new Date();//creates a variable cuurentTime that pulls the time
@@ -105,12 +113,7 @@ function digClock() {
     seconds = currentTime.getSeconds(); // assigning the value to variable seconds
     amPm = "AM"; // assigning the value to variable amPM
   
-    if(aH == hours && aM == minutes && shutAlarm == false){
-        sound.play();
-    } else{
-        sound.pause();
-    };
-
+    
     /*start of clock without the alarm function*/
     // Please note that the new Date() funcion will return in military times
     // Conditions are being set to display the military times in AM/PM 
@@ -125,17 +128,21 @@ function digClock() {
     if(hours < 10){ //if the clock returns a value smaller than 10 then add  a string "0" to 
         hours = "0" + hours; // the value
     }
-
     if(minutes < 10){ //if the clock returns a value smaller than 10 then add  a string "0" to 
         minutes = "0" + minutes; // the value
     }
     if(seconds < 10){ //if the clock returns a value smaller than 10 then add  a string "0" to 
         seconds = "0" + seconds; // the value
     }
+    // conditions to compare the alarm time to actual time
+    if(aH == hours && aM == minutes && aMpM == amPm && shutAlarm == false){
+        sound.play();
+    } else{
+        sound.pause();
+    };
     var displayclock = document.getElementById('myClock'); //declaring and assigning a variable to the id of element where clock will appear
     displayclock.innerHTML = hours + ":" + minutes + ":" + seconds + " " + amPm; //formatting of layout of clock and setting it to display
     setTimeout('digClock()', 1000); //
-
 }
 digClock();
     
